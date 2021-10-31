@@ -31,8 +31,20 @@ def do_filter(df_in):
     print(f'(Label validity filter) Removed {colonic_neoplasia.shape[0] - valid_labels.shape[0]} rows, '
           f'{valid_labels.shape[0]} remaining')
 
-    valid_features = valid_labels.dropna(subset=['AGE', 'APRDRG_Risk_Mortality', 'APRDRG_Severity'])
-    print(f'(Feature validity filter) Removed {valid_labels.shape[0] - valid_features.shape[0]} rows, '
+    # merge ZIPINC and ZIPINC_QRTL, then drop rows with missing data
+    valid_labels.fillna({'ZIPINC_QRTL': valid_labels['ZIPINC']})
+    zip_merged = valid_labels.drop(labels=['ZIPINC'], axis=1)
+
+    valid_features = zip_merged.dropna(subset=['AGE', 'APRDRG_Risk_Mortality', 'APRDRG_Severity', 'ZIPINC_QRTL'])
+
+    # The '.' indicates na in some NIS columns
+    valid_features = valid_features[
+        (valid_features['APRDRG_Risk_Mortality'] != '.') |
+        (valid_features['APRDRG_Severity'] != '.') |
+        (valid_features['ZIPINC_QRTL'] != '.')
+    ]
+
+    print(f'(Feature validity filter) Removed {zip_merged.shape[0] - valid_features.shape[0]} rows, '
           f'{valid_features.shape[0]} remaining')
 
     valid_aprdrg = valid_features[(valid_features['APRDRG_Risk_Mortality'] != 0) & (valid_features['APRDRG_Severity'] != 0)]

@@ -10,14 +10,15 @@ Direct from NIS:
     PAY1 - one-hot encode
     RACE - one-hot encode
     TRAN_IN - one-hot encode
-    ZIPINC - one-hot encode
-    ZIPINC_QRTL - one-hot encode
+    ZIPINC_QRTL - normalize min 1, max 4
 
 Engineered:
     chronic_diabetes - ohe from DX icd codes
     hiv - ohe from DX icd codes
     malignancy - ohe from DX icd codes
     Others??
+
+NOTE normalization probably doesn't help DTC/RF but may boost LR performance
 """
 
 import util
@@ -30,11 +31,28 @@ def do_preprocessing(df):
     # Normalize AGE
     preprocessed_df['AGE'] = (df['AGE'] - 18) / (120)
     assert not (preprocessed_df['AGE'] > 1).any()
+    assert not (preprocessed_df['AGE'] < 0).any()
 
-    # Normalize APRDRG columns
-    for aprdrg in ['APRDRG_Risk_Mortality', 'APRDRG_Severity']:
-        preprocessed_df[aprdrg] = (df[aprdrg] - 1) / 3
-        assert not (preprocessed_df[aprdrg] > 1).any()
+    # Normalize APRDRG and ZIPINC_QRTL columns (same range for all of them)
+    for four_value_col in ['APRDRG_Risk_Mortality', 'APRDRG_Severity', 'ZIPINC_QRTL']:
+        preprocessed_df[four_value_col] = (df[four_value_col] - 1) / 3
+        assert not (preprocessed_df[four_value_col] > 1).any()
+        assert not (preprocessed_df[four_value_col] < 0).any()
+
+    # One-hot encode FEMALE, PAY1, RACE, TRAN_IN
+    dumdums = pd.get_dummies(
+        df[['FEMALE', 'PAY1', 'RACE', 'TRAN_IN']],
+        columns=['FEMALE', 'PAY1', 'RACE', 'TRAN_IN'],
+        prefix={
+            'FEMALE': 'sex',
+            'PAY1': 'payer',
+            'RACE': 'race',
+            'TRAN_IN': 'transfer'
+        },
+        dummy_na=True
+    )
+
+    preprocessed_df = pd.concat([preprocessed_df, dumdums], axis=1)
 
     return preprocessed_df
 
