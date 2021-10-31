@@ -28,10 +28,14 @@ def do_filter(df_in):
           f'{colonic_neoplasia.shape[0]} remaining')
 
     valid_labels = colonic_neoplasia.dropna(subset=['DIED', 'LOS'])
-    print(f'(Validity filter) Removed {colonic_neoplasia.shape[0] - valid_labels.shape[0]} rows, '
+    print(f'(Label validity filter) Removed {colonic_neoplasia.shape[0] - valid_labels.shape[0]} rows, '
           f'{valid_labels.shape[0]} remaining')
 
-    return valid_labels
+    valid_features = valid_labels.dropna(subset=['AGE', 'APRDRG_Risk_Mortality', 'APRDRG_Severity'])
+    print(f'(Feature validity filter) Removed {valid_labels.shape[0] - valid_features.shape[0]} rows, '
+          f'{valid_features.shape[0]} remaining')
+
+    return valid_features
 
 
 if __name__ == '__main__':
