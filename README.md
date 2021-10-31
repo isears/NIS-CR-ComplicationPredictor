@@ -4,7 +4,8 @@ Code for "Predicting Colonic Neoplasia Surgical Complications: A Machine Learnin
 
 ## Setup
 
-Configure settings by creating a `settings.yaml` file in the root directory of the repository with the following format:
+Configure settings by creating a `localconfig.yaml` file in the root directory of the repository with the following format:
 ```yaml
 data_path: '/path/to/local/NIS/data.csv'
+cache_path: '/path/to/local/cache/directory'
 ```
