@@ -2,18 +2,19 @@ import util
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
+from sklearn import tree
 from sklearn.ensemble import RandomForestClassifier
+from sklearn.linear_model import LogisticRegression
 from sklearn.model_selection import KFold
 from imblearn.over_sampling import SMOTE
 from sklearn.base import clone
 from sklearn.metrics import confusion_matrix, plot_roc_curve, auc
 
 
-# Utility method to perform CV and plot ROC curves for arbitrary classifiers
 def do_cv(clf, df, cv):
     print(f'Performing cross validation on {df.shape[0]} examples')
 
-    labels = ['LOS', 'DIED']
+    labels = ['DIED', 'LOS']
     features = [c for c in df.columns if c not in labels]
     ret = {}
 
@@ -102,5 +103,7 @@ if __name__ == '__main__':
     df = pd.read_csv(f"{util.SETTINGS['cache_path']}/preprocessed.csv")
 
     cv = KFold(n_splits=5, shuffle=True, random_state=42)
+    # clf = tree.DecisionTreeClassifier()
     clf = RandomForestClassifier(n_jobs=-1, n_estimators=500)
+    # clf = LogisticRegression(n_jobs=-1, max_iter=10000)
     ret = do_cv(clf, df, cv)
