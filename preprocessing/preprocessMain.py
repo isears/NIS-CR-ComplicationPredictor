@@ -3,6 +3,8 @@ Desired features:
 ---
 
 Direct from NIS:
+    DIED - no change
+    LOS - 0 if < 10, 1 if > 10
     AGE - normalize min 18, max 120 (inclusion criteria specified > 18)
     APRDRG_Risk_Mortality - normalize min 1, max 4 (filtering should have removed anything with APRDRG 0
     APRDRG_Severity - same as mortality
@@ -28,6 +30,10 @@ import featureEngineer
 
 def do_preprocessing(df):
     preprocessed_df = pd.DataFrame()
+
+    # Labels
+    preprocessed_df['DIED'] = df['DIED']
+    preprocessed_df['LOS'] = df['LOS'] > 10
 
     # Normalize AGE
     preprocessed_df['AGE'] = (df['AGE'] - 18) / (120)
