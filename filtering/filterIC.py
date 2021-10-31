@@ -35,7 +35,11 @@ def do_filter(df_in):
     print(f'(Feature validity filter) Removed {valid_labels.shape[0] - valid_features.shape[0]} rows, '
           f'{valid_features.shape[0]} remaining')
 
-    return valid_features
+    valid_aprdrg = valid_features[(valid_features['APRDRG_Risk_Mortality'] != 0) & (valid_features['APRDRG_Severity'] != 0)]
+    print(f'(APRDRG validity filter) Removed {valid_features.shape[0] - valid_aprdrg.shape[0]} rows, '
+          f'{valid_aprdrg.shape[0]} remaining')
+
+    return valid_aprdrg
 
 
 if __name__ == '__main__':
