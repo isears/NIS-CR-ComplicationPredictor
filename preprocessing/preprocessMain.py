@@ -23,6 +23,7 @@ NOTE normalization probably doesn't help DTC/RF but may boost LR performance
 
 import util
 import pandas as pd
+import featureEngineer
 
 
 def do_preprocessing(df):
@@ -54,9 +55,15 @@ def do_preprocessing(df):
 
     preprocessed_df = pd.concat([preprocessed_df, dumdums], axis=1)
 
+    # Get OHE chronic conditions
+    preprocessed_df = pd.concat([preprocessed_df, featureEngineer.get_chronic(df)], axis=1)
+
     return preprocessed_df
 
 
 if __name__ == '__main__':
     filtered_df = pd.read_csv(f"{util.SETTINGS['cache_path']}/filtered.csv")
-    do_preprocessing(filtered_df)
+    preprocessed_df = do_preprocessing(filtered_df)
+
+    print('[+] Preprocessing completed successfully, saving to cache')
+    preprocessed_df.to_csv(f"{util.SETTINGS['cache_path']}/preprocessed.csv", index=False)
