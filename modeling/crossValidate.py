@@ -64,7 +64,6 @@ def do_cv(clf, df, cv):
             # reset for next fold
             clf = clone(clf)
 
-
         # Mean of all CV:
         mean_tpr = np.mean(tprs, axis=0)
         mean_tpr[-1] = 1.0

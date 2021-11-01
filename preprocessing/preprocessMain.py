@@ -33,7 +33,7 @@ def do_preprocessing(df):
 
     # Labels
     preprocessed_df['DIED'] = df['DIED']
-    preprocessed_df['LOS'] = df['LOS'] > 10
+    preprocessed_df['LOS'] = (df['LOS'] > 10).astype(float)
 
     # Normalize AGE
     preprocessed_df['AGE'] = (df['AGE'] - 18) / (120)
