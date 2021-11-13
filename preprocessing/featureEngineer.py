@@ -15,7 +15,7 @@ def get_chronic(df_in):
     print(match_codes)
 
     chronic_match = pd.concat(
-        [df_in[icd10_cols + icd9_cols].apply(lambda row: row.str.contains(dx).any(), axis=1).rename(dx) for dx in
+        [df_in[icd10_cols + icd9_cols].apply(lambda row: row.eq(dx).any(), axis=1).rename(dx) for dx in
          match_codes], axis=1)
 
     chronic_match = chronic_match.astype(int)
