@@ -68,7 +68,7 @@ def do_preprocessing(df):
 
 
 if __name__ == '__main__':
-    filtered_df = pd.read_csv(f"{util.SETTINGS['cache_path']}/filtered.csv")
+    filtered_df = pd.read_csv(f"{util.SETTINGS['cache_path']}/filtered.csv", low_memory=False)
     preprocessed_df = do_preprocessing(filtered_df)
 
     print('[+] Preprocessing completed successfully, saving to cache')
