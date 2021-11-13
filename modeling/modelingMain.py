@@ -20,4 +20,4 @@ if __name__ == '__main__':
         ret = modeling.crossValidate.do_cv(model, df, cv)
 
         for cv_result in ret:
-            cv_result.roc_fig.savefig(f"{util.SETTINGS['cache_path']}/{name}_{cv_result.prediction_target}.png")
+            cv_result.roc_fig.savefig(f"{util.results_path}/{name}_{cv_result.prediction_target}.png")

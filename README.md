@@ -2,6 +2,8 @@
 
 Code for "Predicting Colonic Neoplasia Surgical Complications: A Machine Learning Approach"
 
+Latest results [here](./results/README.md)
+
 ## Organization
 Each package contains scripts that output to the cache directory (specified in `localconfig.yaml`). Subsequent components of the pipeline will read from the cache directory.
 
