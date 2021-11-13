@@ -10,7 +10,7 @@ if __name__ == '__main__':
     df = pd.read_csv(f"{util.SETTINGS['cache_path']}/preprocessed.csv")
 
     models = {
-        'DT': tree.DecisionTreeClassifier(),
+        'DT': tree.DecisionTreeClassifier(min_samples_leaf=100),
         'RF': RandomForestClassifier(n_jobs=-1, n_estimators=500),
         'LR': LogisticRegression(n_jobs=-1, max_iter=10000)
     }
