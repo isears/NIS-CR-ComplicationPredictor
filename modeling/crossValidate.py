@@ -1,4 +1,5 @@
 import util
+from modeling import CvResult
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
@@ -16,7 +17,7 @@ def do_cv(clf, df, cv):
 
     labels = ['DIED', 'LOS']
     features = [c for c in df.columns if c not in labels]
-    ret = {}
+    ret = list()
 
     for label_idx, label in enumerate(labels):
         print(f'Training for {label}')
@@ -24,7 +25,7 @@ def do_cv(clf, df, cv):
         sensitivities = []
         specificities = []
         accuracies = []
-        ret[label] = {'clf': list()}
+        saved_classifiers = []
         mean_fpr = np.linspace(0, 1, 100)
         tprs = list()
 
@@ -59,7 +60,7 @@ def do_cv(clf, df, cv):
             tprs.append(interp_tpr)
 
             # Save clf
-            ret[label]['clf'].append(clf)
+            saved_classifiers.append(clf)
 
             # reset for next fold
             clf = clone(clf)
@@ -87,13 +88,17 @@ def do_cv(clf, df, cv):
             title=f'{clf.__class__.__name__} ROC for {label} (Avg. AUC {auc_avg:.3f})'
         )
 
-        ret[label]['mean_tpr'] = mean_tpr
-        ret[label]['mean_fpr'] = mean_fpr
-
         if idx > 5:
             ax.get_legend().remove()  # Legend is annoying in 10-fold CV
 
-        ret[label]['plot'] = plt
+        ret.append(CvResult(
+            prediction_target=label,
+            mean_fpr=mean_fpr,
+            mean_tpr=mean_tpr,
+            roc_fig=fig,
+            roc_ax=ax,
+            classifiers=saved_classifiers
+        ))
 
     return ret
 
@@ -102,7 +107,5 @@ if __name__ == '__main__':
     df = pd.read_csv(f"{util.SETTINGS['cache_path']}/preprocessed.csv")
 
     cv = KFold(n_splits=5, shuffle=True, random_state=42)
-    # clf = tree.DecisionTreeClassifier()
     clf = RandomForestClassifier(n_jobs=-1, n_estimators=500)
-    # clf = LogisticRegression(n_jobs=-1, max_iter=10000)
     ret = do_cv(clf, df, cv)
