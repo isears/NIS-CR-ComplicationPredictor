@@ -41,7 +41,7 @@ def get_comorbidity_codes():
     all_startswith_codes = list()
     all_match_codes = list()
 
-    with open('./raw_cci_codes.txt', 'r') as f:
+    with open('raw_cci_codes.txt', 'r') as f:
         for line in f.readlines():
             if line == '':
                 continue
@@ -64,13 +64,3 @@ def get_comorbidity_codes():
             all_startswith_codes += startswith_codes
 
     return all_match_codes, all_startswith_codes
-
-
-if __name__ == '__main__':
-    m_codes, sw_codes = get_comorbidity_codes()
-    print(m_codes)
-    print(sw_codes)
-
-    print(f'Total {len(m_codes) + len(sw_codes)} codes')
-
-

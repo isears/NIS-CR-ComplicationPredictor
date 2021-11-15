@@ -1,6 +1,6 @@
 import re
 import pandas as pd
-from parseCCI import get_comorbidity_codes
+from preprocessing.parseCCI import get_comorbidity_codes
 
 
 # This will not scale very well, could probably benefit from some optimization
