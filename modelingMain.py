@@ -9,6 +9,9 @@ import modeling.crossValidate
 if __name__ == '__main__':
     df = pd.read_csv(f"{util.SETTINGS['cache_path']}/preprocessed.csv")
 
+    # TODO: Debugging only, please remove
+    df = df.head(1000)
+
     models = {
         'DT': tree.DecisionTreeClassifier(min_samples_leaf=100),
         'RF': RandomForestClassifier(n_jobs=-1, n_estimators=500),

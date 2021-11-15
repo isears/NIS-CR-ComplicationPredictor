@@ -13,4 +13,3 @@ class CvResult:
     mean_fpr: np.ndarray
     roc_fig: figure
     roc_ax: axes
-

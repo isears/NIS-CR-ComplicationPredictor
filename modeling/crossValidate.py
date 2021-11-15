@@ -1,12 +1,6 @@
-import util
 from modeling import CvResult
-import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
-from sklearn import tree
-from sklearn.ensemble import RandomForestClassifier
-from sklearn.linear_model import LogisticRegression
-from sklearn.model_selection import KFold
 from imblearn.over_sampling import SMOTE
 from sklearn.base import clone
 from sklearn.metrics import confusion_matrix, plot_roc_curve, auc
@@ -101,11 +95,3 @@ def do_cv(clf, df, cv):
         ))
 
     return ret
-
-
-if __name__ == '__main__':
-    df = pd.read_csv(f"{util.SETTINGS['cache_path']}/preprocessed.csv")
-
-    cv = KFold(n_splits=5, shuffle=True, random_state=42)
-    clf = RandomForestClassifier(n_jobs=-1, n_estimators=500)
-    ret = do_cv(clf, df, cv)
