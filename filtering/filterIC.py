@@ -1,6 +1,5 @@
 import re
 import pandas as pd
-import util
 
 COLONIC_NEOPLASIA_CODES = [
     'D12.0', 'D12.2', 'D12.3', 'D12.4', 'D12.5', 'D12.6', 'K63.5', '211.3', '153.0', '153.1', '153.2', '153.3',
@@ -42,23 +41,14 @@ def do_filter(df_in):
         (valid_features['APRDRG_Risk_Mortality'] != '.') |
         (valid_features['APRDRG_Severity'] != '.') |
         (valid_features['ZIPINC_QRTL'] != '.')
-    ]
+        ]
 
     print(f'(Feature validity filter) Removed {zip_merged.shape[0] - valid_features.shape[0]} rows, '
           f'{valid_features.shape[0]} remaining')
 
-    valid_aprdrg = valid_features[(valid_features['APRDRG_Risk_Mortality'] != 0) & (valid_features['APRDRG_Severity'] != 0)]
+    valid_aprdrg = valid_features[
+        (valid_features['APRDRG_Risk_Mortality'] != 0) & (valid_features['APRDRG_Severity'] != 0)]
     print(f'(APRDRG validity filter) Removed {valid_features.shape[0] - valid_aprdrg.shape[0]} rows, '
           f'{valid_aprdrg.shape[0]} remaining')
 
     return valid_aprdrg
-
-
-if __name__ == '__main__':
-    # Filter by inclusion criteria
-    df = pd.read_csv(util.SETTINGS['data_path'], low_memory=False)
-    print(f'Starting with {df.shape[0]} admissions')
-    filtered_df = do_filter(df)
-
-    print('[+] Filtering completed successfully, saving to cache')
-    filtered_df.to_csv(f"{util.SETTINGS['cache_path']}/filtered.csv", index=False)
