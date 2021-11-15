@@ -1,5 +1,10 @@
 import pandas as pd
-import preprocessing.featureEngineer
+import preprocessing.featureEngineering
+import preprocessing.normalization
+import util
+import re
+
+NORMALIZATION_MAX_AGE = 120
 
 
 def do_preprocessing(df):
@@ -27,23 +32,27 @@ def do_preprocessing(df):
 
     NOTE normalization probably doesn't help DTC/RF but may boost LR performance
     """
-
+    # TODO: add Lap/open
     preprocessed_df = pd.DataFrame()
 
     # Labels
     preprocessed_df['DIED'] = df['DIED']
     preprocessed_df['LOS'] = (df['LOS'] > 10).astype(float)
 
-    # Normalize AGE
-    preprocessed_df['AGE'] = (df['AGE'] - 18) / (120)
-    assert not (preprocessed_df['AGE'] > 1).any()
-    assert not (preprocessed_df['AGE'] < 0).any()
+    # Normalize
+    df = preprocessing.normalization.normalize(df)
 
-    # Normalize APRDRG and ZIPINC_QRTL columns (same range for all of them)
-    for four_value_col in ['APRDRG_Risk_Mortality', 'APRDRG_Severity', 'ZIPINC_QRTL']:
-        preprocessed_df[four_value_col] = (df[four_value_col] - 1) / 3
-        assert not (preprocessed_df[four_value_col] > 1).any()
-        assert not (preprocessed_df[four_value_col] < 0).any()
+    preprocessed_df = pd.concat(
+        [preprocessed_df, df[['AGE', 'APRDRG_Risk_Mortality', 'APRDRG_Severity', 'ZIPINC_QRTL']]],
+        axis=1
+    )
+
+    icd9_cols = [col for col in df.columns if re.search("^DX[0-9]{1,2}$", col)]
+    icd10_cols = [col for col in df.columns if re.search("^I10_DX[0-9]{1,2}$", col)]
+
+    # Get whether or not procedure is lap
+    preprocessed_df['lap'] = df[icd9_cols + icd10_cols].isin(util.inclusionCriteria.get_all_lap()).any(axis='columns')
+    preprocessed_df['lap'] = preprocessed_df['lap'].astype(float)
 
     # One-hot encode FEMALE, PAY1, RACE, TRAN_IN
     dumdums = pd.get_dummies(
@@ -61,6 +70,6 @@ def do_preprocessing(df):
     preprocessed_df = pd.concat([preprocessed_df, dumdums], axis=1)
 
     # Get OHE chronic conditions
-    preprocessed_df = pd.concat([preprocessed_df, featureEngineer.get_chronic(df)], axis=1)
+    preprocessed_df = pd.concat([preprocessed_df, featureEngineering.get_chronic(df)], axis=1)
 
     return preprocessed_df
