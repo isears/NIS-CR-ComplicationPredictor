@@ -16,7 +16,7 @@ components of the pipeline will read from the cache directory.
 2. Preprocessing: transform data so that it's ready for training (e.g. one-hot-encode ICD diagnoses). Reads
    from `cache/filtered.csv` and writes to `cache/preprocessed.csv`
 3. Modeling: cross-validate models on preprocessed data. Reads from `cache/preprocessed.csv`, writes results
-   to `cache/results` directory (TODO)
+   to `results` directory
 
 Note: a first-pass filter is applied to the entire NIS database before any of these steps. The first-pass filtering
 script is located in the `standalone` directory.
