@@ -4,8 +4,6 @@ import preprocessing.normalization
 import util
 import re
 
-NORMALIZATION_MAX_AGE = 120
-
 
 def do_preprocessing(df):
     """
@@ -25,6 +23,7 @@ def do_preprocessing(df):
         ZIPINC_QRTL - normalize min 1, max 4
 
     Engineered:
+        lap - whether or not patient had a laparoscopic procedure
         chronic_diabetes - ohe from DX icd codes
         hiv - ohe from DX icd codes
         malignancy - ohe from DX icd codes
