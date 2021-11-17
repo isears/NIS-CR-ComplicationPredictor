@@ -34,7 +34,6 @@ def _range_expander(unexpanded: list):
 def get_comorbidity_codes():
     dropped_categories = [
         'Myocardial infarction',
-        'Peripheral vascular disease',
         'Cerebrovascular disease'
     ]
 

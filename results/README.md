@@ -1,26 +1,18 @@
 # Results
 
-## Predicting DIED
+## Reveiver Operating Characteristic Curves
 
-### Decision Tree
-![ROC Curve](./DT_DIED.png)
+### Predicting DIED
 
-### Random Forest
-![ROC Curve](./RF_DIED.png)
+| Decision Tree      | Random Forest | Logistic Regression     |
+| :---        |    :----:   |          ---: |
+| ![ROC Curve](./DT_DIED.png)      | ![ROC Curve](./RF_DIED.png)       | ![ROC Curve](./LR_DIED.png)  |
 
-### Logistic Regression
-![ROC Curve](./LR_DIED.png)
+### Predicting LOS
 
-## Predicting LOS
-
-### Decision Tree
-![ROC Curve](./DT_LOS.png)
-
-### Random Forest
-![ROC Curve](./RF_LOS.png)
-
-### Logistic Regression
-![ROC Curve](./LR_LOS.png)
+| Decision Tree      | Random Forest | Logistic Regression     |
+| :---        |    :----:   |          ---: |
+| ![ROC Curve](./DT_LOS.png)      | ![ROC Curve](./RF_LOS.png)       | ![ROC Curve](./LR_LOS.png)  |
 
 
 
