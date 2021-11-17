@@ -11,7 +11,7 @@ if __name__ == '__main__':
 
     models = {
         'DT': tree.DecisionTreeClassifier(min_samples_leaf=100),
-        'RF': RandomForestClassifier(n_jobs=-1, n_estimators=500, min_samples_leaf=100),
+        'RF': RandomForestClassifier(n_jobs=-1, n_estimators=500),
         'LR': LogisticRegression(n_jobs=-1, max_iter=10000)
     }
 

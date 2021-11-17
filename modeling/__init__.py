@@ -9,7 +9,7 @@ from sklearn.metrics import confusion_matrix, plot_roc_curve, auc
 def do_cv(clf, df, cv):
     print(f'Performing cross validation on {df.shape[0]} examples')
 
-    labels = ['DIED', 'LOS']
+    labels = ['DIED', 'LOS', 'anastomotic_leak', 'hemorrhage']
     features = [c for c in df.columns if c not in labels]
     ret = list()
 

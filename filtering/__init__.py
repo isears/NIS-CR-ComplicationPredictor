@@ -1,5 +1,4 @@
 import re
-import pandas as pd
 
 COLONIC_NEOPLASIA_CODES = [
     'D12.0', 'D12.2', 'D12.3', 'D12.4', 'D12.5', 'D12.6', 'K63.5', '211.3', '153.0', '153.1', '153.2', '153.3',

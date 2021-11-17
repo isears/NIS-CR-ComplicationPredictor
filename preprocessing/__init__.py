@@ -31,12 +31,24 @@ def do_preprocessing(df):
 
     NOTE normalization probably doesn't help DTC/RF but may boost LR performance
     """
-    # TODO: add Lap/open
+    icd9_proc_cols = [col for col in df.columns if re.search("^PR[0-9]{1,2}$", col)]
+    icd10_proc_cols = [col for col in df.columns if re.search("^I10_PR[0-9]{1,2}$", col)]
+    procedure_columns = icd9_proc_cols + icd10_proc_cols
+
+    icd9_dx_cols = [col for col in df.columns if re.search("^DX[0-9]{1,2}$", col)]
+    icd10_dx_cols = [col for col in df.columns if re.search("^I10_DX[0-9]{1,2}$", col)]
+    diagnosis_columns = icd9_dx_cols + icd10_dx_cols
+
     preprocessed_df = pd.DataFrame()
 
     # Labels
     preprocessed_df['DIED'] = df['DIED']
     preprocessed_df['LOS'] = (df['LOS'] > 10).astype(float)
+
+    anastomotic_leak_codes = ['K632', 'K651', 'K913', 'K9181', 'K9189', '56981', '56722', '99749']
+    hemorrhage_codes = ['K91840', '99811']
+    preprocessed_df['anastomotic_leak'] = df[diagnosis_columns].isin(anastomotic_leak_codes).any(axis='columns')
+    preprocessed_df['hemorrhage'] = df[diagnosis_columns].isin(hemorrhage_codes).any(axis='columns')
 
     # Normalize
     df = preprocessing.normalization.normalize(df)
@@ -46,11 +58,8 @@ def do_preprocessing(df):
         axis=1
     )
 
-    icd9_cols = [col for col in df.columns if re.search("^DX[0-9]{1,2}$", col)]
-    icd10_cols = [col for col in df.columns if re.search("^I10_DX[0-9]{1,2}$", col)]
-
     # Get whether or not procedure is lap
-    preprocessed_df['lap'] = df[icd9_cols + icd10_cols].isin(util.inclusionCriteria.get_all_lap()).any(axis='columns')
+    preprocessed_df['lap'] = df[procedure_columns].isin(util.inclusionCriteria.get_all_lap()).any(axis='columns')
     preprocessed_df['lap'] = preprocessed_df['lap'].astype(float)
 
     # One-hot encode FEMALE, PAY1, RACE, TRAN_IN
