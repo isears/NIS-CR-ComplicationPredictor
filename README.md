@@ -18,9 +18,6 @@ components of the pipeline will read from the cache directory.
 3. Modeling: cross-validate models on preprocessed data. Reads from `cache/preprocessed.csv`, writes results
    to `results` directory
 
-Note: a first-pass filter is applied to the entire NIS database before any of these steps. The first-pass filtering
-script is located in the `standalone` directory.
-
 ## Setup
 
 Configure settings by creating a `localconfig.yaml` file in the root directory of the repository with the following
@@ -32,6 +29,12 @@ cache_path: '/path/to/local/cache/directory'
 ```
 
 The `cache_path` should point to any emtpy, script-writable directory that can hold intermediate results.
+
+Install python dependencies:
+
+```bash
+pip install -r ./requirements.txt
+```
 
 ## Run
 

@@ -1,0 +1,6 @@
+python-docx
+scikit-learn
+pandas
+matplotlib
+numpy
+imbalanced-learn
