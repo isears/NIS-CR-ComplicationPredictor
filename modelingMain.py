@@ -19,5 +19,8 @@ if __name__ == '__main__':
         cv = KFold(n_splits=5, shuffle=True, random_state=42)
         ret = modeling.do_cv(model, df, cv)
 
+        print('Saving CV results:')
         for cv_result in ret:
-            cv_result.roc_fig.savefig(f"{util.results_path}/{name}_{cv_result.prediction_target}.png")
+            print(
+                f'\tAvg AUC for {cv_result.get_clf_name()} {cv_result.prediction_target}-classifier: {cv_result.auc_avg()}')
+            cv_result.save_rocs(util.results_path)
