@@ -8,7 +8,7 @@ from typing import List
 def do_cv(clf, df, cv) -> List[CvResult]:
     print(f'Cross validating {clf.__class__.__name__} on {df.shape[0]} total examples')
 
-    labels = ['DIED', 'LOS', 'anastomotic_leak', 'hemorrhage']
+    labels = ['DIED', 'LOS', 'anastomotic_leak']
     features = [c for c in df.columns if c not in labels]
     ret = list()
 
