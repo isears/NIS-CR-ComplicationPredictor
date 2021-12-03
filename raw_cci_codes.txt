@@ -11,7 +11,7 @@ Diabetes without chronic complication: 250.0 - 250.3, 250.8, 250.9
 Diabetes with chronic complication: 250.4 - 250.7
 Hemiplegia or paraplegia: 334.1, 342.x, 343.x, 344.0 - 344.6, 344.9
 Renal disease: 403.01, 403.11, 403.91, 404.02, 404.03, 404.12, 404.13, 404.92, 404.93, 582.x, 583.0 - 583.7, 585.x, 586.x, 588.0, V42.0, V45.1, V56.x
-Any malignancy, including lymphoma and leukaemia, except malignant neoplasm of skin: 140.x - 172.x, 174.x - 195.8, 200.x - 208.x, 238.6
+Any malignancy, including lymphoma and leukaemia, except malignant neoplasm of skin: 140.x - 172.x, 174.x - 195.x, 200.x - 208.x, 238.6
 Moderate or severe liver disease: 456.0 - 456.2, 572.2- 572.8
 Metastatic solid tumour: 196.x - 199.x
 AIDS/HIV: 042.x - 044.x

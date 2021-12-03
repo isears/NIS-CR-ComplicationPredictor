@@ -1,32 +1,47 @@
 """
 Parses from raw text copied from: https://cran.r-project.org/web/packages/comorbidity/vignettes/comorbidityscores.html
+
 """
 
 
 # Replaces hyphen with literal range of codes
 def _range_expander(unexpanded: list):
     ret = list()
-    for c in unexpanded:
-        if '-' in c:
-            start, end = c.split('-')
+    for entry in unexpanded:
+        if '-' in entry:
+            start, end = entry.split('-')
             start = start.strip()
             end = end.strip()
 
             # Assume all codes could start with a letter
-            start_alpha_prefix = start[0] if start[0].isalpha() else ''
-            start_numeric_part = int(start[1:]) if start[0].isalpha() else int(start)
+            def split_alpha_num(str_in):
+                alpha_prefix = ''
+                numeric_part = 0
+                for idx, c in enumerate(str_in):
+                    if c.isalpha() or c == '0':
+                        alpha_prefix += c
+                    else:
+                        numeric_part = int(str_in[idx:])
+                        break
+                else:  # for F00 - F03
+                    alpha_prefix = alpha_prefix[0:-1]
 
-            end_alpha_prefix = end[0] if end[0].isalpha() else ''
-            end_numeric_part = int(end[1:]) if end[0].isalpha() else int(end)
+                return alpha_prefix, numeric_part
+
+            start_alpha_prefix, start_numeric_part = split_alpha_num(start)
+            end_alpha_prefix, end_numeric_part = split_alpha_num(end)
 
             # If codes are ICD-10, they should both have same prefix (if ICD-9, prefix will be empty string)
-            assert start_alpha_prefix == end_alpha_prefix
+            # assert start_alpha_prefix == end_alpha_prefix
 
             # Assuming inclusive ranges here
+            print(
+                f'[*] Including range: {start_alpha_prefix}{start_numeric_part} -> {end_alpha_prefix}{end_numeric_part}'
+            )
             ret += [start_alpha_prefix + str(idx) for idx in range(start_numeric_part, end_numeric_part + 1)]
 
         else:
-            ret += [c]
+            ret += [entry]
 
     return ret
 
@@ -63,3 +78,9 @@ def get_comorbidity_codes():
             all_startswith_codes += startswith_codes
 
     return all_match_codes, all_startswith_codes
+
+
+if __name__ == '__main__':
+    a, b = get_comorbidity_codes()
+    print(len(a))
+    print(len(b))
