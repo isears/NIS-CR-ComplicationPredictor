@@ -57,3 +57,5 @@ inclusionCriteria = InclusionCriteria(
                '0D1N4ZN', '0D1N4ZP', '0D194ZL', '0D1A4ZH', '0D1A4ZK', '0D1A4ZL', '0D1A4ZM', '0D1A4ZN', '0D1B4ZH',
                '0D1B4ZK', '0D1B4ZL', '0D1B4ZM', '0D1B4ZN']
 )
+
+labels = ['DIED', 'LOS', 'anastomotic_leak']
