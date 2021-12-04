@@ -26,6 +26,9 @@ df['APRDRG_Severity'] = (df['APRDRG_Severity'] > 2).astype(int)
 # ZIPINC_QRTL < 3
 df['ZIPINC_QRTL'] = (df['ZIPINC_QRTL'] < 2).astype(int)
 
+for label in labels:
+    df[label] = df[label].astype(int)
+
 # Convert raw CCI codes back to their general category
 labeled_match_codes, labeled_startswith_codes = get_labeled_comorbidity_codes()
 all_cci_categories = set(labeled_match_codes.keys()).union(set(labeled_startswith_codes.keys()))
@@ -46,7 +49,7 @@ df = df.drop(analyzed_codes, axis=1)
 for cci_category in all_cci_categories:
     assert df[f'match_{cci_category}'].dtype.name == 'bool'
     assert df[f'startswith_{cci_category}'].dtype.name == 'bool'
-    df[cci_category] = df[f'match_{cci_category}'] | df[f'startswith_{cci_category}'].astype(int)
+    df[cci_category] = (df[f'match_{cci_category}'] | df[f'startswith_{cci_category}']).astype(int)
     df = df.drop([f'match_{cci_category}', f'startswith_{cci_category}'], axis=1)
 
 # Make sure everything is in 0,1
@@ -55,7 +58,8 @@ assert df.isin([0, 1]).all().all()
 # Setup table
 document = Document()
 table = document.add_table(rows=1 + len(df.columns), cols=len(labels) + 1)
-table.style = 'Medium Grid 3 Accent 1'
+# table.style = 'Medium Grid 3 Accent 1'
+table.style = 'Table Grid'
 hdr_cells = table.rows[0].cells
 hdr_cell_left = hdr_cells[0]
 hdr_cell_left.text = 'Preoperative Characteristics'
@@ -65,6 +69,15 @@ for cell in hdr_cells[2:]:
     hdr_cell_right = hdr_cell_right.merge(cell)
 
 hdr_cell_right.text = 'Odds Ratio; p-value'
+categories_list = [c for c in df.columns if c not in labels]
+category_to_row_map = {category: idx + 2 for idx, category in enumerate(categories_list)}
+label_to_column_map = {label: idx + 1 for idx, label in enumerate(labels)}
+
+for category, idx in category_to_row_map.items():
+    table.rows[idx].cells[0].text = category
+
+for label, idx in label_to_column_map.items():
+    table.rows[1].cells[idx].text = label
 
 for idx, label in enumerate(labels):
 
@@ -81,15 +94,15 @@ for idx, label in enumerate(labels):
     print(dropped_columns)
 
     features_df = cleaned_df[[c for c in cleaned_df.columns if c not in labels]]
-    odds_ratios = pd.DataFrame(columns=['feature', 'odds', 'p-value'])
     for c in features_df.columns:
         ct = pd.crosstab(cleaned_df[c], cleaned_df[label])
         odds, p_value = fisher_exact(ct)
-        odds_ratios = odds_ratios.append({'feature': c, 'odds': odds, 'p-value': p_value}, ignore_index=True)
+        relevant_row = table.rows[category_to_row_map[c]]
 
-    # Add information to table
-    for row in table.rows:
-        row_cells = row.cells
+        if p_value < 0.001:
+            relevant_row.cells[label_to_column_map[label]].text = f'{odds:.2f}; < 0.001'
+        else:
+            relevant_row.cells[label_to_column_map[label]].text = f'{odds:.2f}; {p_value:.3f}'
 
 if os.path.exists('results/table3.docx'):
     os.remove('results/table3.docx')
