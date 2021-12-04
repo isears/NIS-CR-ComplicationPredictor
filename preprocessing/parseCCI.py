@@ -31,14 +31,14 @@ def _range_expander(unexpanded: list):
     return ret
 
 
-def get_comorbidity_codes():
+def get_labeled_comorbidity_codes() -> (dict, dict):
     dropped_categories = [
         'Myocardial infarction',
         'Cerebrovascular disease'
     ]
 
-    all_startswith_codes = list()
-    all_match_codes = list()
+    startswith_codes_by_category = dict()
+    match_codes_by_category = dict()
 
     with open('raw_cci_codes.txt', 'r') as f:
         for line in f.readlines():
@@ -59,7 +59,22 @@ def get_comorbidity_codes():
             startswith_codes = [c.replace('.x', '').replace('.', '').strip() for c in raw_codes.split(',') if '.x' in c]
             startswith_codes = _range_expander(startswith_codes)
 
-            all_match_codes += match_codes
-            all_startswith_codes += startswith_codes
+            if category not in match_codes_by_category:
+                match_codes_by_category[category] = list()
 
-    return all_match_codes, all_startswith_codes
+            if category not in startswith_codes_by_category:
+                startswith_codes_by_category[category] = list()
+
+            match_codes_by_category[category] += match_codes
+            startswith_codes_by_category[category] = startswith_codes
+
+    return match_codes_by_category, startswith_codes_by_category
+
+
+def get_comorbidity_codes() -> (set, set):
+    mcodes, swcodes = get_labeled_comorbidity_codes()
+    unlabeled_mcodes = [code for sublist in mcodes.values() for code in sublist]
+    unlabeled_swcodes = [code for sublist in swcodes.values() for code in sublist]
+
+    # Implicitly drop any codes that show up in multiple categories
+    return set(unlabeled_mcodes), set(unlabeled_swcodes)
