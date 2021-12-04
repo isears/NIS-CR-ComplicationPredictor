@@ -3,12 +3,12 @@ from imblearn.over_sampling import SMOTE
 from sklearn.base import clone
 from sklearn.metrics import confusion_matrix, roc_curve
 from typing import List
+from util import labels
 
 
 def do_cv(clf, df, cv) -> List[CvResult]:
     print(f'Cross validating {clf.__class__.__name__} on {df.shape[0]} total examples')
 
-    labels = ['DIED', 'LOS', 'anastomotic_leak']
     features = [c for c in df.columns if c not in labels]
     ret = list()
 
