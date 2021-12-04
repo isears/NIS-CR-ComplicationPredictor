@@ -11,7 +11,34 @@ from preprocessing.parseCCI import get_labeled_comorbidity_codes
 from scipy.stats import fisher_exact
 from docx import Document
 
-TOP_FEATURES_TO_SHOW = 15
+AGE_CUTOFF = 65
+
+feature_name_map = {
+    'AGE': f'Age > {AGE_CUTOFF}',
+    'ZIPINC_QRTL': 'Median household income for patient\'s ZIP Code',
+    'lap': 'Laparoscopic procedure',
+    'sex_0.0': 'Male',
+    'sex_1.0': 'Female',
+    'sex_nan': 'Unknown sex',
+    'payer_1.0': 'Medicare primary payer',
+    'payer_2.0': 'Medicaid primary payer',
+    'payer_3.0': 'Private insurance primary payer',
+    'payer_4.0': 'Self-pay primary payer',
+    'payer_5.0': 'No charge',
+    'payer_6.0': 'Other primary payer',
+    'payer_nan': 'Unknown primary payer',
+    'race_1.0': 'White',
+    'race_2.0': 'Black',
+    'race_3.0': 'Hispanic',
+    'race_4.0': 'Asian or Pacific Islander',
+    'race_5.0': 'Native American',
+    'race_6.0': 'Other',
+    'race_nan': 'Unknown race',
+    'transfer_0.0': 'Not transferred',
+    'transfer_1.0': 'Transferred from acute care hospital',
+    'transfer_2.0': 'Transferred from another type of health facility',
+    'transfer_nan': 'Unknown transfer status'
+}
 
 df = pd.read_csv(f'{util.SETTINGS["cache_path"]}/preprocessed.csv', low_memory=False)
 # Throw out normalization
@@ -19,12 +46,14 @@ df = denormalize(df)
 
 # Convert everything to binary vars (for odds ratios)
 # Over 65
-df['AGE'] = (df['AGE'] > 65).astype(int)
+df['AGE'] = (df['AGE'] > AGE_CUTOFF).astype(int)
 # APRDRGs > 2
 df['APRDRG_Risk_Mortality'] = (df['APRDRG_Risk_Mortality'] > 2).astype(int)
 df['APRDRG_Severity'] = (df['APRDRG_Severity'] > 2).astype(int)
 # ZIPINC_QRTL < 3
 df['ZIPINC_QRTL'] = (df['ZIPINC_QRTL'] < 2).astype(int)
+
+df = df.rename(columns=feature_name_map)
 
 for label in labels:
     df[label] = df[label].astype(int)
@@ -57,7 +86,7 @@ assert df.isin([0, 1]).all().all()
 
 # Setup table
 document = Document()
-table = document.add_table(rows=1 + len(df.columns), cols=len(labels) + 1)
+table = document.add_table(rows=2 + (len(df.columns) - len(labels)), cols=len(labels) + 1)
 # table.style = 'Medium Grid 3 Accent 1'
 table.style = 'Table Grid'
 hdr_cells = table.rows[0].cells
@@ -79,6 +108,8 @@ for category, idx in category_to_row_map.items():
 for label, idx in label_to_column_map.items():
     table.rows[1].cells[idx].text = label
 
+all_dropped_columns = set()
+
 for idx, label in enumerate(labels):
 
     # Clear out anything that doesn't contain any information
@@ -92,6 +123,7 @@ for idx, label in enumerate(labels):
     dropped_columns = [c for c in original_columns if c not in cleaned_df.columns]
     print(f'[*] Dropped {len(dropped_columns)} columns for containing no information, {len(cleaned_df.columns)} remain')
     print(dropped_columns)
+    all_dropped_columns = all_dropped_columns.union(set(dropped_columns))
 
     features_df = cleaned_df[[c for c in cleaned_df.columns if c not in labels]]
     for c in features_df.columns:
@@ -99,10 +131,16 @@ for idx, label in enumerate(labels):
         odds, p_value = fisher_exact(ct)
         relevant_row = table.rows[category_to_row_map[c]]
 
-        if p_value < 0.001:
-            relevant_row.cells[label_to_column_map[label]].text = f'{odds:.2f}; < 0.001'
+        alpha = 0.01
+        if p_value < alpha:
+            relevant_row.cells[label_to_column_map[label]].text = f'{odds:.2f}; < {alpha}'
         else:
             relevant_row.cells[label_to_column_map[label]].text = f'{odds:.2f}; {p_value:.3f}'
+
+# Drop features that ended up being irrelevant to odds ratio calculation
+for col in sorted(list(all_dropped_columns), key=lambda x: category_to_row_map[x], reverse=True):
+    row_to_remove = table.rows[category_to_row_map[col]]
+    row_to_remove._element.getparent().remove(row_to_remove._element)
 
 if os.path.exists('results/table3.docx'):
     os.remove('results/table3.docx')
