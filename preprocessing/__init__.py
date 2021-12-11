@@ -46,7 +46,9 @@ def do_preprocessing(df):
     preprocessed_df['LOS'] = (df['LOS'] > 10).astype(float)
 
     anastomotic_leak_codes = ['K632', '56981', 'K651', '56722']
+    hemorrhage_codes = ['K91840', '99811']
     preprocessed_df['anastomotic_leak'] = df[diagnosis_columns].isin(anastomotic_leak_codes).any(axis='columns')
+    preprocessed_df['hemorrhage'] = df[diagnosis_columns].isin(hemorrhage_codes).any(axis='columns')
 
     # Normalize
     df = preprocessing.normalization.normalize(df)

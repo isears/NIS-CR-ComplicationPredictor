@@ -58,4 +58,4 @@ inclusionCriteria = InclusionCriteria(
                '0D1B4ZK', '0D1B4ZL', '0D1B4ZM', '0D1B4ZN']
 )
 
-labels = ['DIED', 'LOS', 'anastomotic_leak']
+labels = ['DIED', 'LOS', 'anastomotic_leak', 'hemorrhage']

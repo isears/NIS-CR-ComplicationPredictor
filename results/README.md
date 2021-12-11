@@ -19,3 +19,9 @@
 | Decision Tree      | Random Forest | Logistic Regression     |
 | :---        |    :---   |          :--- |
 | ![ROC Curve](./DecisionTreeClassifier_anastomotic_leak.png)      | ![ROC Curve](./RandomForestClassifier_anastomotic_leak.png)       | ![ROC Curve](./LogisticRegression_anastomotic_leak.png)  |
+
+### Predicting hemorrhage
+
+| Decision Tree                                         | Random Forest                                         | Logistic Regression                               |
+|:------------------------------------------------------|:------------------------------------------------------|:--------------------------------------------------|
+| ![ROC Curve](./DecisionTreeClassifier_hemorrhage.png) | ![ROC Curve](./RandomForestClassifier_hemorrhage.png) | ![ROC Curve](./LogisticRegression_hemorrhage.png) |
