@@ -5,9 +5,12 @@ from sklearn.ensemble import RandomForestClassifier
 from sklearn.linear_model import LogisticRegression
 from sklearn.model_selection import KFold
 import modeling
+import pickle
+
 
 if __name__ == '__main__':
     df = pd.read_csv(f"{util.SETTINGS['cache_path']}/preprocessed.csv")
+    results_pickle = open('test_results.pkl', 'wb')
 
     models = {
         'DT': tree.DecisionTreeClassifier(min_samples_leaf=100),
@@ -24,3 +27,5 @@ if __name__ == '__main__':
             print(
                 f'\tAvg AUC for {cv_result.get_clf_name()} {cv_result.prediction_target}-classifier: {cv_result.auc_avg()}')
             cv_result.save_rocs(util.results_path)
+            pickle.dump(cv_result, results_pickle)
+    results_pickle.close()
