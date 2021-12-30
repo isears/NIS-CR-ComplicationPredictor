@@ -3,3 +3,5 @@ localconfig.yaml
 **__pychache__
 .DS_Store
 [~][$]*
+*.pkl
+*.csv
