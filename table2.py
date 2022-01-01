@@ -2,9 +2,7 @@ import pickle
 import docx
   
 doc = docx.Document()
-  
 doc.add_heading('Table 2', 0)
-
 table = doc.add_table(rows=1 , cols=6)
 
 row = table.rows[0].cells
