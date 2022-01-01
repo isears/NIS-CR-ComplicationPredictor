@@ -28,4 +28,5 @@ if __name__ == '__main__':
                 f'\tAvg AUC for {cv_result.get_clf_name()} {cv_result.prediction_target}-classifier: {cv_result.auc_avg()}')
             cv_result.save_rocs(util.results_path)
             pickle.dump(cv_result, results_pickle)
+            print("cv pickled")
     results_pickle.close()
