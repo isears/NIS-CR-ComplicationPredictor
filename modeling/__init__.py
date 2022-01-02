@@ -43,7 +43,7 @@ def do_cv(clf, df, cv) -> List[CvResult]:
                 trained_classifier=clf,
                 tpr=tpr,
                 fpr=fpr,
-                accuracy=float(tp) / float(tp + tn + fp + fn),
+                accuracy=float(tp + tn) / float(tp + tn + fp + fn),
                 sensitivity=float(tp) / float(tp + fn),
                 specificity=float(tn) / float(tn + fp)
             ))
