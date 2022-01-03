@@ -13,7 +13,6 @@ row[3].text = 'Specificity'
 row[4].text = 'Sensitivity'
 row[5].text = 'AUC'
 
-
 with open('test_results.pkl', 'rb') as f:
     while True:
         try:

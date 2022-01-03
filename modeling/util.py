@@ -17,6 +17,15 @@ class SingleFoldResult:
 
     def get_auc(self) -> float:
         return auc(self.fpr, self.tpr)
+    
+    def get_acc(self) -> float:
+        return self.accuracy
+    
+    def get_specificity(self) -> float:
+        return self.specificity
+    
+    def get_sensitivity(self) -> float:
+        return self.sensitivity
 
 
 @dataclass
@@ -42,6 +51,15 @@ class CvResult:
 
     def auc_avg(self) -> float:
         return np.array([f.get_auc() for f in self.folds]).mean()
+
+    def acc_avg(self) -> float:
+        return np.array([f.get_acc() for f in self.folds]).mean()
+    
+    def sensitivity_avg(self) -> float:
+        return np.array([f.get_sensitivity() for f in self.folds]).mean()
+
+    def specificity_avg(self) -> float:
+        return np.array([f.get_specificity() for f in self.folds]).mean()
 
     def get_clf_name(self) -> str:
         return self.folds[0].trained_classifier.__class__.__name__
