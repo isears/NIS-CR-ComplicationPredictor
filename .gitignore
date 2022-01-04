@@ -2,4 +2,6 @@
 localconfig.yaml
 **__pychache__
 .DS_Store
-[~][$]*
+*.pkl
+*.csv
+output_dir/
