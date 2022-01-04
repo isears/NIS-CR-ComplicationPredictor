@@ -142,7 +142,7 @@ for idx, label in enumerate(labels):
             relevant_row.cells[label_to_column_map[label]].text = f'{odds:.2f}; < {alpha}'
         else:
             relevant_row.cells[label_to_column_map[label]].text = f'{odds:.2f}; {p_value:.3f}'
-    ci_interval = stats.t.interval(alpha=CONFIDENCE, df = len(all_odds)-1 , loc = np.mean(all_odds), scale=stats.sem(all_odds))
+    odds_ci = stats.t.interval(alpha=CONFIDENCE, df=len(all_odds)-1 , loc=np.mean(all_odds), scale=stats.sem(all_odds))
 
 
 # Drop features that ended up being irrelevant to odds ratio calculation
