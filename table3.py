@@ -17,10 +17,12 @@ import numpy as np
 CONFIDENCE = 0.95
 AGE_CUTOFF = 65
 
-def odds_ci(cross_tab, odds_ratio:float) -> list:
-    
-
-    return
+def odds_ci(cross_tab, odds_ratio:float, confidence=0.95) -> tuple:
+    z_confidence = 1.96 # TODO: fix magic number
+    root = np.sqrt(sum([1 / x for x in cross_tab.values.flatten()]))
+    base = np.log(odds_ratio)
+    ci = (np.exp(base - z_confidence * root), np.exp(base + z_confidence * root))
+    return ci
 
 
 feature_name_map = {
@@ -139,9 +141,8 @@ for idx, label in enumerate(labels):
     # all_odds = []
     for c in features_df.columns:
         ct = pd.crosstab(cleaned_df[c], cleaned_df[label])
-        print(ct)
         odds, p_value = fisher_exact(ct) # odds ratio
-        # all_odds.append(odds)
+        print("[ODDS CI]", odds_ci(ct, odds))
         relevant_row = table.rows[category_to_row_map[c]]
 
         alpha = 0.01
@@ -149,7 +150,6 @@ for idx, label in enumerate(labels):
             relevant_row.cells[label_to_column_map[label]].text = f'{odds:.2f}; < {alpha}'
         else:
             relevant_row.cells[label_to_column_map[label]].text = f'{odds:.2f}; {p_value:.3f}'
-    # odds_ci = stats.t.interval(alpha=CONFIDENCE, df=len(all_odds)-1 , loc=np.mean(all_odds), scale=stats.sem(all_odds))
 
 
 # Drop features that ended up being irrelevant to odds ratio calculation
