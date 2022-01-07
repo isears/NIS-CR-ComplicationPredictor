@@ -17,6 +17,12 @@ import numpy as np
 CONFIDENCE = 0.95
 AGE_CUTOFF = 65
 
+def odds_ci(cross_tab, odds_ratio:float) -> list:
+    
+
+    return
+
+
 feature_name_map = {
     'AGE': f'Age > {AGE_CUTOFF}',
     'ZIPINC_QRTL': 'Median household income for patient\'s ZIP Code',
@@ -130,11 +136,12 @@ for idx, label in enumerate(labels):
     all_dropped_columns = all_dropped_columns.union(set(dropped_columns))
 
     features_df = cleaned_df[[c for c in cleaned_df.columns if c not in labels]]
-    all_odds = []
+    # all_odds = []
     for c in features_df.columns:
         ct = pd.crosstab(cleaned_df[c], cleaned_df[label])
+        print(ct)
         odds, p_value = fisher_exact(ct) # odds ratio
-        all_odds.append(odds)
+        # all_odds.append(odds)
         relevant_row = table.rows[category_to_row_map[c]]
 
         alpha = 0.01
@@ -142,7 +149,7 @@ for idx, label in enumerate(labels):
             relevant_row.cells[label_to_column_map[label]].text = f'{odds:.2f}; < {alpha}'
         else:
             relevant_row.cells[label_to_column_map[label]].text = f'{odds:.2f}; {p_value:.3f}'
-    odds_ci = stats.t.interval(alpha=CONFIDENCE, df=len(all_odds)-1 , loc=np.mean(all_odds), scale=stats.sem(all_odds))
+    # odds_ci = stats.t.interval(alpha=CONFIDENCE, df=len(all_odds)-1 , loc=np.mean(all_odds), scale=stats.sem(all_odds))
 
 
 # Drop features that ended up being irrelevant to odds ratio calculation
