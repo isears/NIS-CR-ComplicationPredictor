@@ -6,19 +6,19 @@
 
 | Decision Tree      | Random Forest | Logistic Regression     |
 | :---        |    :---  |          :--- |
-| ![ROC Curve](./DecisionTreeClassifier_DIED.png)      | ![ROC Curve](./RandomForestClassifier_DIED.png)       | ![ROC Curve](./LogisticRegression_DIED.png)  |
+| ![ROC Curve](./lap_DecisionTreeClassifier_DIED.png)      | ![ROC Curve](./lap_RandomForestClassifier_DIED.png)       | ![ROC Curve](./lap_LogisticRegression_DIED.png)  |
 
 ### Predicting LOS
 
 | Decision Tree      | Random Forest | Logistic Regression     |
 | :---        |    :---   |          :--- |
-| ![ROC Curve](./DecisionTreeClassifier_LOS.png)      | ![ROC Curve](./RandomForestClassifier_LOS.png)       | ![ROC Curve](./LogisticRegression_LOS.png)  |
+| ![ROC Curve](./lap_DecisionTreeClassifier_LOS.png)      | ![ROC Curve](./lap_RandomForestClassifier_LOS.png)       | ![ROC Curve](./lap_LogisticRegression_LOS.png)  |
 
 ### Predicting anastomotic_leak
 
 | Decision Tree      | Random Forest | Logistic Regression     |
 | :---        |    :---   |          :--- |
-| ![ROC Curve](./DecisionTreeClassifier_anastomotic_leak.png)      | ![ROC Curve](./RandomForestClassifier_anastomotic_leak.png)       | ![ROC Curve](./LogisticRegression_anastomotic_leak.png)  |
+| ![ROC Curve](./lap_DecisionTreeClassifier_anastomotic_leak.png)      | ![ROC Curve](./lap_RandomForestClassifier_anastomotic_leak.png)       | ![ROC Curve](./lap_LogisticRegression_anastomotic_leak.png)  |
 
 ## Reveiver Operating Characteristic Curves (Open Dataset)
 
@@ -26,16 +26,16 @@
 
 | Decision Tree      | Random Forest | Logistic Regression     |
 | :---        |    :---  |          :--- |
-| ![ROC Curve](./DecisionTreeClassifier_DIED.png)      | ![ROC Curve](./RandomForestClassifier_DIED.png)       | ![ROC Curve](./LogisticRegression_DIED.png)  |
+| ![ROC Curve](./open_DecisionTreeClassifier_DIED.png)      | ![ROC Curve](./open_RandomForestClassifier_DIED.png)       | ![ROC Curve](./open_LogisticRegression_DIED.png)  |
 
 ### Predicting LOS
 
 | Decision Tree      | Random Forest | Logistic Regression     |
 | :---        |    :---   |          :--- |
-| ![ROC Curve](./DecisionTreeClassifier_LOS.png)      | ![ROC Curve](./RandomForestClassifier_LOS.png)       | ![ROC Curve](./LogisticRegression_LOS.png)  |
+| ![ROC Curve](./open_DecisionTreeClassifier_LOS.png)      | ![ROC Curve](./open_RandomForestClassifier_LOS.png)       | ![ROC Curve](./open_LogisticRegression_LOS.png)  |
 
 ### Predicting anastomotic_leak
 
 | Decision Tree      | Random Forest | Logistic Regression     |
 | :---        |    :---   |          :--- |
-| ![ROC Curve](./DecisionTreeClassifier_anastomotic_leak.png)      | ![ROC Curve](./RandomForestClassifier_anastomotic_leak.png)       | ![ROC Curve](./LogisticRegression_anastomotic_leak.png)  |
+| ![ROC Curve](./open_DecisionTreeClassifier_anastomotic_leak.png)      | ![ROC Curve](./open_RandomForestClassifier_anastomotic_leak.png)       | ![ROC Curve](./open_LogisticRegression_anastomotic_leak.png)  |
