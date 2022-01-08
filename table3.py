@@ -1,5 +1,6 @@
 """
-Build separate statsmodels logistic regression models (without SMOTE) and extract odds ratios
+Compute odds ratios based on scipy's fischer exact function and 95% CI as outlined here:
+https://www.statology.org/confidence-interval-for-odds-ratio/
 """
 
 import pandas as pd
@@ -9,16 +10,15 @@ from modeling import labels
 from preprocessing.normalization import denormalize
 from preprocessing.parseCCI import get_labeled_comorbidity_codes
 from scipy.stats import fisher_exact
-from scipy import stats
 from docx import Document
-from numpy import array
 import numpy as np
 
 CONFIDENCE = 0.95
 AGE_CUTOFF = 65
 
-def odds_ci(cross_tab, odds_ratio:float, confidence=0.95) -> tuple:
-    z_confidence = 1.96 # TODO: fix magic number
+
+def odds_ci(cross_tab, odds_ratio: float, confidence=0.95) -> tuple:
+    z_confidence = 1.96  # TODO: fix magic number
     root = np.sqrt(sum([1 / x for x in cross_tab.values.flatten()]))
     base = np.log(odds_ratio)
     ci = (np.exp(base - z_confidence * root), np.exp(base + z_confidence * root))
@@ -109,7 +109,7 @@ hdr_cell_right = hdr_cells[1]
 for cell in hdr_cells[2:]:
     hdr_cell_right = hdr_cell_right.merge(cell)
 
-hdr_cell_right.text = 'Odds Ratio; p-value'
+hdr_cell_right.text = 'Odds Ratio (95% ci); p-value'
 categories_list = [c for c in df.columns if c not in labels]
 category_to_row_map = {category: idx + 2 for idx, category in enumerate(categories_list)}
 label_to_column_map = {label: idx + 1 for idx, label in enumerate(labels)}
@@ -141,16 +141,18 @@ for idx, label in enumerate(labels):
     # all_odds = []
     for c in features_df.columns:
         ct = pd.crosstab(cleaned_df[c], cleaned_df[label])
-        odds, p_value = fisher_exact(ct) # odds ratio
-        print("[ODDS CI]", odds_ci(ct, odds))
+        odds, p_value = fisher_exact(ct)  # odds ratio
+        ci_lower, ci_upper = odds_ci(ct, odds)
+        print("[ODDS CI]", (ci_lower, ci_upper))
         relevant_row = table.rows[category_to_row_map[c]]
 
         alpha = 0.01
         if p_value < alpha:
-            relevant_row.cells[label_to_column_map[label]].text = f'{odds:.2f}; < {alpha}'
+            formatted_txt = f'{odds:.2f} ({ci_lower:.2f}, {ci_upper:.2f}); < {alpha}'
+            relevant_row.cells[label_to_column_map[label]].text = formatted_txt
         else:
-            relevant_row.cells[label_to_column_map[label]].text = f'{odds:.2f}; {p_value:.3f}'
-
+            formatted_txt = f'{odds:.2f} ({ci_lower:.2f}, {ci_upper:.2f}); {p_value:.3f}'
+            relevant_row.cells[label_to_column_map[label]].text = formatted_txt
 
 # Drop features that ended up being irrelevant to odds ratio calculation
 for col in sorted(list(all_dropped_columns), key=lambda x: category_to_row_map[x], reverse=True):
