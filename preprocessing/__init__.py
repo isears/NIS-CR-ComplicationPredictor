@@ -1,7 +1,6 @@
 import pandas as pd
 import preprocessing.featureEngineering
 import preprocessing.normalization
-import util
 import re
 
 
@@ -31,9 +30,6 @@ def do_preprocessing(df):
 
     NOTE normalization probably doesn't help DTC/RF but may boost LR performance
     """
-    icd9_proc_cols = [col for col in df.columns if re.search("^PR[0-9]{1,2}$", col)]
-    icd10_proc_cols = [col for col in df.columns if re.search("^I10_PR[0-9]{1,2}$", col)]
-    procedure_columns = icd9_proc_cols + icd10_proc_cols
 
     icd9_dx_cols = [col for col in df.columns if re.search("^DX[0-9]{1,2}$", col)]
     icd10_dx_cols = [col for col in df.columns if re.search("^I10_DX[0-9]{1,2}$", col)]
@@ -55,10 +51,6 @@ def do_preprocessing(df):
         [preprocessed_df, df[['AGE', 'APRDRG_Risk_Mortality', 'APRDRG_Severity', 'ZIPINC_QRTL']]],
         axis=1
     )
-
-    # Get whether or not procedure is lap
-    preprocessed_df['lap'] = df[procedure_columns].isin(util.inclusionCriteria.get_all_lap()).any(axis='columns')
-    preprocessed_df['lap'] = preprocessed_df['lap'].astype(float)
 
     # One-hot encode FEMALE, PAY1, RACE, TRAN_IN
     dumdums = pd.get_dummies(
