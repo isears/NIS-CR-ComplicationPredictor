@@ -120,25 +120,24 @@ for ds in ['lap', 'open']:
     for label, idx in label_to_column_map.items():
         table.rows[1].cells[idx].text = label
 
-    all_dropped_columns = set()
-
     for idx, label in enumerate(labels):
         this_label_dropped_columns = set()
 
         features_df = df[[c for c in df.columns if c not in labels]]
 
         for c in features_df.columns:
+            relevant_row = table.rows[category_to_row_map[c]]
             ct = pd.crosstab(df[c], df[label])
 
             if 0 in ct.values or ct.shape != (2, 2):  # If ony part of the 2x2 is 0, we can't compute odds ratios
                 this_label_dropped_columns.add(c)
+                relevant_row.cells[label_to_column_map[label]].text = 'n/a'
                 continue
 
             odds, p_value = fisher_exact(ct)  # odds ratio
 
             ci_lower, ci_upper = odds_ci(ct, odds)
             print("[ODDS CI]", (ci_lower, ci_upper))
-            relevant_row = table.rows[category_to_row_map[c]]
 
             alpha = 0.01
             if p_value < alpha:
@@ -149,12 +148,6 @@ for ds in ['lap', 'open']:
                 relevant_row.cells[label_to_column_map[label]].text = formatted_txt
 
         print(f'[*] Dropped {len(this_label_dropped_columns)} columns for containing no information')
-        all_dropped_columns = all_dropped_columns.union(set(this_label_dropped_columns))
-
-    # Drop features that ended up being irrelevant to odds ratio calculation
-    for col in sorted(list(all_dropped_columns), key=lambda x: category_to_row_map[x], reverse=True):
-        row_to_remove = table.rows[category_to_row_map[col]]
-        row_to_remove._element.getparent().remove(row_to_remove._element)
 
     if os.path.exists(f'results/{ds}_table3.docx'):
         os.remove(f'results/{ds}_table3.docx')
