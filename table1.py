@@ -21,7 +21,11 @@ AGE_CUTOFF = 65
 
 feature_name_map = {
     'AGE': f'Age > {AGE_CUTOFF}',
-    'ZIPINC_QRTL': 'Median household income for patient\'s ZIP Code',
+    #'ZIPINC_QRTL': 'Median household income for patient\'s ZIP Code',
+    'ZipIncomeQuartile_1.0': '0 - 25th percentile for Household Income of Patient\'s ZIP Code',
+    'ZipIncomeQuartile_2.0': '26 - 50th percentile for Household Income of Patient\'s ZIP Code',
+    'ZipIncomeQuartile_3.0': '51 - 75th percentile for Household Income of Patient\'s ZIP Code',
+    'ZipIncomeQuartile_4.0': '76 - 100th percentile for Household Income of Patient\'s ZIP Code',
     'sex_0.0': 'Male',
     'sex_1.0': 'Female',
     'sex_nan': 'Unknown sex',
@@ -65,9 +69,16 @@ def make_tf_df():
         # APRDRGs > 2
         df['APRDRG_Risk_Mortality'] = (df['APRDRG_Risk_Mortality'] > 2).astype(int)
         df['APRDRG_Severity'] = (df['APRDRG_Severity'] > 2).astype(int)
-        # ZIPINC_QRTL < 3
-        df['ZIPINC_QRTL'] = (df['ZIPINC_QRTL'] < 2).astype(int)
 
+        #one hot encoding ZIPINC_QRTL; then merging it back to df; remove original ZIPINC_QRTL
+        zip_inc_qrtl = pd.get_dummies(df['ZIPINC_QRTL'], prefix='ZipIncomeQuartile')
+        df = pd.merge(
+            left=df,
+            right=zip_inc_qrtl,
+            left_index=True,
+            right_index=True,
+        )
+        df = df.drop(columns=['ZIPINC_QRTL'])
         df = df.rename(columns=feature_name_map)
 
         for label in labels:
