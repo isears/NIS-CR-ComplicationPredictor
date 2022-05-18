@@ -12,5 +12,5 @@ def get_std(df):
     return df.std()
 
 if __name__ == "__main__":
-    med_df = pd.read_csv(data["data_path"])
+    med_df = pd.read_csv(data["filtered"])
     print(get_std(med_df))
