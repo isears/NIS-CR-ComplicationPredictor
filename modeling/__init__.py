@@ -1,5 +1,5 @@
 from modeling.util import CvResult, SingleFoldResult
-from imblearn.over_sampling import SMOTE
+from imblearn.over_sampling import SMOTE, ADASYN
 from sklearn.base import clone
 from sklearn.metrics import confusion_matrix, roc_curve
 from typing import List
@@ -26,9 +26,13 @@ def do_cv(clf, df, cv) -> List[CvResult]:
             y_train = train_df[label]
             y_test = test_df[label]
 
-            # Do SMOTE (TRAINING data only)
-            oversample = SMOTE(random_state=42)
-            X_train_resampled, y_train_resampled = oversample.fit_resample(X_train, y_train)
+            # # Do SMOTE (TRAINING data only)
+            # oversample = SMOTE(random_state=42)
+            # X_train_resampled, y_train_resampled = oversample.fit_resample(X_train, y_train)
+
+            # Do ADASYN (TRAINING data only)
+            ada = ADASYN()
+            X_train_resampled, y_train_resampled = ada.fit_resample(X_train,y_train)
 
             print(f'[Cross validation] Fitting {clf.__class__.__name__} {label}-classifier to fold {idx}...')
             clf.fit(X_train_resampled, y_train_resampled)
