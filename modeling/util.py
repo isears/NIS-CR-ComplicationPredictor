@@ -52,6 +52,9 @@ class CvResult:
     def auc_avg(self) -> float:
         return np.array([f.get_auc() for f in self.folds]).mean()
 
+    def auc_variance(self) -> float:
+        return np.array([f.get_auc() for f in self.folds]).var()
+
     def acc_avg(self) -> float:
         return np.array([f.get_acc() for f in self.folds]).mean()
 
