@@ -2,6 +2,7 @@
 Parses from raw text copied from: https://cran.r-project.org/web/packages/comorbidity/vignettes/comorbidityscores.html
 
 """
+import json
 
 
 # Replaces hyphen with literal range of codes
@@ -46,11 +47,14 @@ def _range_expander(unexpanded: list):
     return ret
 
 
-def get_labeled_comorbidity_codes() -> (dict, dict):
-    dropped_categories = [
-        'Myocardial infarction',
-        'Cerebrovascular disease'
-    ]
+def get_labeled_comorbidity_codes(drop_acute=True) -> (dict, dict):
+    dropped_categories = []
+
+    if drop_acute:
+        dropped_categories = [
+            'Myocardial infarction',
+            'Cerebrovascular disease'
+        ]
 
     startswith_codes_by_category = dict()
     match_codes_by_category = dict()
@@ -86,8 +90,8 @@ def get_labeled_comorbidity_codes() -> (dict, dict):
     return match_codes_by_category, startswith_codes_by_category
 
 
-def get_comorbidity_codes() -> (set, set):
-    mcodes, swcodes = get_labeled_comorbidity_codes()
+def get_comorbidity_codes(drop_acute=True) -> (set, set):
+    mcodes, swcodes = get_labeled_comorbidity_codes(drop_acute=drop_acute)
     unlabeled_mcodes = [code for sublist in mcodes.values() for code in sublist]
     unlabeled_swcodes = [code for sublist in swcodes.values() for code in sublist]
 
@@ -95,7 +99,29 @@ def get_comorbidity_codes() -> (set, set):
     return set(unlabeled_mcodes), set(unlabeled_swcodes)
 
 
+def get_cci_score(codes):
+    score = 0
+
+    with open("cci.json", 'r') as f:
+        cci_dict = json.load(f)
+
+    for code in codes:
+        for cci_category, cci_data in cci_dict.items():
+            match_codes = cci_data["Match Codes"]
+            startswith_codes = cci_data["Startswith Codes"]
+
+            if code in match_codes:
+                score += cci_data["Points"]
+
+            elif any(code.startswith(swcode) for swcode in startswith_codes):
+                score += cci_data["Points"]
+
+    return score
+
+
 if __name__ == '__main__':
-    a, b = get_comorbidity_codes()
-    print(len(a))
-    print(len(b))
+    s = get_cci_score(["4560", "1961"])
+    # a, b = get_comorbidity_codes(drop_acute=False)
+    # print(len(a))
+    # print(len(b))
+    print(s)
