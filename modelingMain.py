@@ -30,10 +30,15 @@ if __name__ == '__main__':
                 cv_result.save_rocs(util.results_path, ds)
                 pickle.dump(cv_result, results_pickle)
                 print("cv pickled")
+
         ## below added by @raceee
+
         cci_df = pd.read_csv(f"{util.SETTINGS['cache_path']}/{ds}_cci_preprocessed.csv")
+        cci_results_pickle = open(f'{ds}_cci_test_results.pkl', 'wb')
+
         cci_cv = KFold(n_splits=5, shuffle=True, random_state=42)
         cci_ret = modeling.do_cv(LogisticRegression(n_jobs=-1, max_iter=10000), cci_df, cci_cv)
+        
         for cci_cv_result in cci_ret:
             print(f'\tAvg AUC for {cci_cv_result.get_clf_name()} {cci_cv_result.prediction_target}-classifier: {cci_cv_result.auc_avg()}')
             cci_cv_result.save_rocs(util.results_path, ds)
