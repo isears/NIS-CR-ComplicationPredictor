@@ -4,6 +4,7 @@ from typing import List
 import matplotlib.pyplot as plt
 from sklearn.metrics import auc
 import numpy as np
+import pandas as pd
 
 
 @dataclass
@@ -14,6 +15,7 @@ class SingleFoldResult:
     accuracy: float
     specificity: float
     sensitivity: float
+    X: pd.DataFrame
 
     def get_auc(self) -> float:
         return auc(self.fpr, self.tpr)

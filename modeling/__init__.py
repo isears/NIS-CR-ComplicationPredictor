@@ -32,7 +32,7 @@ def do_cv(clf, df, cv) -> List[CvResult]:
 
             # Do ADASYN (TRAINING data only)
             ada = ADASYN()
-            X_train_resampled, y_train_resampled = ada.fit_resample(X_train,y_train)
+            X_train_resampled, y_train_resampled = ada.fit_resample(X_train, y_train)
 
             print(f'[Cross validation] Fitting {clf.__class__.__name__} {label}-classifier to fold {idx}...')
             clf.fit(X_train_resampled, y_train_resampled)
@@ -49,7 +49,8 @@ def do_cv(clf, df, cv) -> List[CvResult]:
                 fpr=fpr,
                 accuracy=float(tp + tn) / float(tp + tn + fp + fn),
                 sensitivity=float(tp) / float(tp + fn),
-                specificity=float(tn) / float(tn + fp)
+                specificity=float(tn) / float(tn + fp),
+                X=X_train_resampled
             ))
 
             # reset for next fold
