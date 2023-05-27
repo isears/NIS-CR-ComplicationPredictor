@@ -4,12 +4,12 @@ from preprocessing.parseCCI import get_comorbidity_codes
 
 
 # This will not scale very well, could probably benefit from some optimization
-def get_chronic(df_in):
+def get_cci_ohe(df_in, drop_acute=True):
     icd9_cols = [col for col in df_in.columns if re.search("^DX[0-9]{1,2}$", col)]
     icd10_cols = [col for col in df_in.columns if re.search("^I10_DX[0-9]{1,2}$", col)]
     df_in[icd10_cols + icd9_cols] = df_in[icd10_cols + icd9_cols].fillna('')
 
-    match_codes, startswith_codes = get_comorbidity_codes()
+    match_codes, startswith_codes = get_comorbidity_codes(drop_acute=drop_acute)
 
     print(f'Looking for the following {len(match_codes)} ICD codes (exact match):')
     print(match_codes)
