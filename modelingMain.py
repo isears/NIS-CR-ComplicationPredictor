@@ -13,6 +13,9 @@ if __name__ == '__main__':
         df = pd.read_csv(f"{util.SETTINGS['cache_path']}/{ds}_preprocessed.csv")
         results_pickle = open(f'{ds}_test_results.pkl', 'wb')
 
+        # Decision to drop APRDRG_Risk_Mortality based on reviewer comments
+        df = df.drop(columns=["APRDRG_Risk_Mortality"])
+
         models = {
             'DT': tree.DecisionTreeClassifier(min_samples_leaf=100),
             'RF': RandomForestClassifier(n_jobs=-1, n_estimators=500),
