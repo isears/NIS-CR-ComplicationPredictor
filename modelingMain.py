@@ -5,7 +5,10 @@ from sklearn.ensemble import RandomForestClassifier
 from sklearn.linear_model import LogisticRegression
 from sklearn.model_selection import KFold
 import modeling
+from modeling.simpleFFNN import SimpleFFNN
 import pickle
+from skorch import NeuralNetBinaryClassifier
+from skorch.callbacks import EarlyStopping
 
 if __name__ == '__main__':
 
@@ -17,9 +20,18 @@ if __name__ == '__main__':
         df = df.drop(columns=["APRDRG_Risk_Mortality"])
 
         models = {
-            'DT': tree.DecisionTreeClassifier(min_samples_leaf=100),
-            'RF': RandomForestClassifier(n_jobs=-1, n_estimators=500),
-            'LR': LogisticRegression(n_jobs=-1, max_iter=10000)
+            # 'DT': tree.DecisionTreeClassifier(min_samples_leaf=100),
+            # 'RF': RandomForestClassifier(n_jobs=-1, n_estimators=500),
+            # 'LR': LogisticRegression(n_jobs=-1, max_iter=10000),
+            'NN': NeuralNetBinaryClassifier(
+                SimpleFFNN,
+                module__n_features=len(df.columns) - 3,
+                module__hidden_dim=int((len(df.columns) - 3) / 2),
+                max_epochs=100,
+                lr=0.01,
+                batch_size=64,
+                callbacks=[EarlyStopping(patience=3)]
+            )
         }
 
         for name, model in models.items():
