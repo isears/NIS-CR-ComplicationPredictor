@@ -1,11 +1,10 @@
 import pandas as pd
 import preprocessing.featureEngineering
 import preprocessing.normalization
-from preprocessing.parseCCI import get_cci_score
 import re
 
 
-def _baseline_preprocess(df):
+def do_preprocessing(df):
     """
     Desired features:
     ---
@@ -43,8 +42,7 @@ def _baseline_preprocess(df):
     preprocessed_df['LOS'] = (df['LOS'] > 10).astype(float)
 
     anastomotic_leak_codes = ['K632', '56981', 'K651', '56722']
-    preprocessed_df['anastomotic_leak'] = df[diagnosis_columns].isin(anastomotic_leak_codes).any(axis='columns').astype(
-        float)
+    preprocessed_df['anastomotic_leak'] = df[diagnosis_columns].isin(anastomotic_leak_codes).any(axis='columns')
 
     # Normalize
     df = preprocessing.normalization.normalize(df)
@@ -69,27 +67,7 @@ def _baseline_preprocess(df):
 
     preprocessed_df = pd.concat([preprocessed_df, dumdums], axis=1)
 
-    return preprocessed_df
-
-
-def do_preprocessing(df):
-    baseline_df = _baseline_preprocess(df)
     # Get OHE chronic conditions
-    preprocessed_df = pd.concat([baseline_df, featureEngineering.get_cci_ohe(df)], axis=1)
+    preprocessed_df = pd.concat([preprocessed_df, featureEngineering.get_chronic(df)], axis=1)
 
     return preprocessed_df
-
-
-def do_cci_preprocessing(df):
-    baseline_df = _baseline_preprocess(df)
-
-    # Same as normal, but include MI and CVD codes
-    cci_ohe = featureEngineering.get_cci_ohe(df, drop_acute=False)
-
-    # Also compute a CCI score for each patient
-    def cci_score(row):
-        return get_cci_score(row[row == 1].index.to_list())
-
-    cci_ohe["cci_score"] = cci_ohe.apply(cci_score, axis=1)
-
-    return pd.concat([baseline_df, cci_ohe], axis=1)
