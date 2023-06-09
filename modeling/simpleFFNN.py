@@ -17,5 +17,5 @@ class SimpleFFNN(nn.Module):
         )
 
     def forward(self, x):
-        y_hat = self.ffnn(x)
+        y_hat = self.ffnn(x) # x: torch.float32
         return torch.sigmoid(y_hat)

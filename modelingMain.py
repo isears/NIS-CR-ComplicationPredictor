@@ -9,6 +9,7 @@ from modeling.simpleFFNN import SimpleFFNN
 import pickle
 from skorch import NeuralNetBinaryClassifier
 from skorch.callbacks import EarlyStopping
+import torch
 
 if __name__ == '__main__':
 
@@ -18,7 +19,6 @@ if __name__ == '__main__':
 
         # Decision to drop APRDRG_Risk_Mortality based on reviewer comments
         df = df.drop(columns=["APRDRG_Risk_Mortality"])
-
         models = {
             # 'DT': tree.DecisionTreeClassifier(min_samples_leaf=100),
             # 'RF': RandomForestClassifier(n_jobs=-1, n_estimators=500),
@@ -45,4 +45,7 @@ if __name__ == '__main__':
                 cv_result.save_rocs(util.results_path, ds)
                 pickle.dump(cv_result, results_pickle)
                 print("cv pickled")
+            with open("nn_state.pkl", "wb") as f:
+                pickle.dump(model, f)
+
         results_pickle.close()
