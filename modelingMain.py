@@ -37,15 +37,15 @@ if __name__ == '__main__':
         for name, model in models.items():
             cv = KFold(n_splits=5, shuffle=True, random_state=42)
             ret = modeling.do_cv(model, df, cv)
-
+            for cv_result in ret:
+                print(cv_result.prediction_target)
             print(f'Saving CV results for {ds} dataset:')
             for cv_result in ret:
-                print(
-                    f'\tAvg AUC for {cv_result.get_clf_name()} {cv_result.prediction_target}-classifier: {cv_result.auc_avg()}')
+                print(f'\tAvg AUC for {cv_result.get_clf_name()} {cv_result.prediction_target}-classifier: {cv_result.auc_avg()}')
                 cv_result.save_rocs(util.results_path, ds)
                 pickle.dump(cv_result, results_pickle)
                 print("cv pickled")
-            with open("nn_state.pkl", "wb") as f:
-                pickle.dump(model, f)
-
-        results_pickle.close()
+                cv_result.folds[len(cv_result.folds) - 1].trained_classifier
+                with open("{}_{}_nn_state.pkl".format(ds,cv_result.prediction_target), "wb") as f:
+                    pickle.dump(cv_result.folds[len(cv_result.folds) - 1].trained_classifier, f)
+            results_pickle.close()
