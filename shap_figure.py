@@ -29,12 +29,12 @@ for model_name in names:
     # .explainer()
     explainer = shap.KernelExplainer(test_model.predict, np.asarray(lap_data))
     sampled = shap.utils.sample(lap_data, random_state=0)
+    print("Starting SHAP values")
     shap_values = explainer.shap_values(np.asarray(sampled))
-    print("shap_values made")
 
     # # beswarm plot
     print("Starting Beeswarm")
-    shap.plots.beeswarm(shap_values, color=plt.get_cmap("cool"), show=False)
+    shap.plots.beeswarm(shap_values, color=plt.get_cmap("cool"))
     image_name = model_name[:-4] + "image.png"
     plt.savefig(image_name)
     break
