@@ -29,10 +29,10 @@ for model_name in names:
     # .explainer()
     print("Starting SHAP values")
     if model_name[0] == "l":
-        explainer = shap.DeepExplainer(test_model.predict, np.asarray(lap_data))
+        explainer = shap.GradientExplainer(test_model.predict, np.asarray(lap_data))
         shap_values = explainer.shap_values(np.asarray(lap_data))
     else:
-        explainer = shap.DeepExplainer(test_model.predict, np.asarray(open_data))
+        explainer = shap.GradientExplainer(test_model.predict, np.asarray(open_data))
         shap_values = explainer.shap_values(np.asarray(open_data))
 
 
