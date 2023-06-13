@@ -29,10 +29,10 @@ for model_name in names:
     # .explainer()
     print("Starting SHAP values")
     if model_name[0] == "l":
-        explainer = shap.KernelExplainer(test_model.predict, np.asarray(lap_data))
+        explainer = shap.DeepExplainer(test_model.predict, np.asarray(lap_data))
         shap_values = explainer.shap_values(np.asarray(lap_data))
     else:
-        explainer = shap.KernelExplainer(test_model.predict, np.asarray(open_data))
+        explainer = shap.DeepExplainer(test_model.predict, np.asarray(open_data))
         shap_values = explainer.shap_values(np.asarray(open_data))
 
 
@@ -41,4 +41,3 @@ for model_name in names:
     shap.plots.beeswarm(shap_values, color=plt.get_cmap("cool"))
     image_name = model_name[:-4] + "image.png"
     plt.savefig(image_name)
-    break
