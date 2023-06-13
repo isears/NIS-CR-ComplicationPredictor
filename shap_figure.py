@@ -27,11 +27,12 @@ for model_name in names:
     print("model loaded")
 
     # .explainer()
-    explainer = shap.KernelExplainer(test_model.predict, np.asarray(lap_data))
     print("Starting SHAP values")
     if model_name[0] == "l":
+        explainer = shap.KernelExplainer(test_model.predict, np.asarray(lap_data))
         shap_values = explainer.shap_values(np.asarray(lap_data))
     else:
+        explainer = shap.KernelExplainer(test_model.predict, np.asarray(open_data))
         shap_values = explainer.shap_values(np.asarray(open_data))
 
 
