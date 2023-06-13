@@ -28,9 +28,12 @@ for model_name in names:
 
     # .explainer()
     explainer = shap.KernelExplainer(test_model.predict, np.asarray(lap_data))
-    sampled = shap.utils.sample(lap_data, random_state=0)
     print("Starting SHAP values")
-    shap_values = explainer.shap_values(np.asarray(sampled))
+    if model_name[0] == "l":
+        shap_values = explainer.shap_values(np.asarray(lap_data))
+    else:
+        shap_values = explainer.shap_values(np.asarray(open_data))
+
 
     # # beswarm plot
     print("Starting Beeswarm")
