@@ -10,8 +10,8 @@ from util import labels
 import matplotlib.pyplot as plt
 
 # get datas
-lap_data = "/Users/racepeterson/NIS-CR-ComplicationPredictor/open_dir/lap_preprocessed.csv"
-open_data = "/Users/racepeterson/NIS-CR-ComplicationPredictor/open_dir/open_preprocessed.csv"
+lap_data = "./output_dir/lap_preprocessed.csv"
+open_data = "./output_dir/open_preprocessed.csv"
 lap_data = pd.read_csv(lap_data).drop(columns=["APRDRG_Risk_Mortality"]) # so shot, need a df first to get columns to do the logic that was done in modeling/__init__.py
 features = [c for c in lap_data.columns if c not in labels]
 lap_data = torch.from_numpy(lap_data[features].to_numpy()).float()
