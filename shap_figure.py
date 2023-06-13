@@ -19,7 +19,7 @@ open_data = torch.from_numpy(pd.read_csv(open_data).drop(columns=["APRDRG_Risk_M
 # get model
 with open('nn_state.pkl',"rb") as f:
     test_model = pickle.load(f)
-test_model.initialize().predict(lap_data)
+test_model.initialize()
 print("model loaded")
 
 # .explainer()
@@ -28,6 +28,6 @@ sampled = shap.utils.sample(lap_data, nsamples=100, random_state=0)
 shap_values = explainer.shap_values(np.asarray(sampled))
 print("shap_values made")
 
-# beswarm plot
-print("Starting Beeswarm")
-shap.plots.beeswarm(shap_values)
+# # beswarm plot
+# print("Starting Beeswarm")
+# shap.plots.beeswarm(shap_values)
