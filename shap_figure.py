@@ -16,7 +16,8 @@ lap_data = pd.read_csv(lap_data).drop(columns=["APRDRG_Risk_Mortality"]) # so sh
 features = [c for c in lap_data.columns if c not in labels]
 lap_data = torch.from_numpy(lap_data[features].to_numpy()).float()
 open_data = torch.from_numpy(pd.read_csv(open_data).drop(columns=["APRDRG_Risk_Mortality"])[features].to_numpy()).float()
-
+open_data = torch.unsqueeze(open_data,0)
+lap_data = torch.unsqueeze(lap_data, 0)
 # get model
 # LAZY!!
 names = ["open_LOS_nn_state.pkl", "open_DIED_nn_state.pkl", "open_anastomotic_leak_nn_state.pkl","lap_LOS_nn_state.pkl", "lap_DIED_nn_state.pkl", "lap_anastomotic_leak_nn_state.pkl"]
@@ -24,15 +25,15 @@ for model_name in names:
     with open(model_name,"rb") as f:
         test_model = pickle.load(f)
     test_model.initialize()
-    print("model loaded")
-
+    print(type(test_model.module))
+    
     # .explainer()
     print("Starting SHAP values")
     if model_name[0] == "l":
-        explainer = shap.GradientExplainer(test_model.predict, np.asarray(lap_data))
+        explainer = shap.GradientExplainer(test_model.module, np.asarray(lap_data))
         shap_values = explainer.shap_values(np.asarray(lap_data))
     else:
-        explainer = shap.GradientExplainer(test_model.predict, np.asarray(open_data))
+        explainer = shap.GradientExplainer(test_model.module, open_data)
         shap_values = explainer.shap_values(np.asarray(open_data))
 
 
