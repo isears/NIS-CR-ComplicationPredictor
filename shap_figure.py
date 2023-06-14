@@ -18,23 +18,24 @@ lap_data = torch.from_numpy(lap_data[features].to_numpy()).float()
 open_data = torch.from_numpy(pd.read_csv(open_data).drop(columns=["APRDRG_Risk_Mortality"])[features].to_numpy()).float()
 open_data = torch.unsqueeze(open_data,0)
 lap_data = torch.unsqueeze(lap_data, 0)
-# get model
+
 # LAZY!!
 names = ["open_LOS_nn_state.pkl", "open_DIED_nn_state.pkl", "open_anastomotic_leak_nn_state.pkl","lap_LOS_nn_state.pkl", "lap_DIED_nn_state.pkl", "lap_anastomotic_leak_nn_state.pkl"]
 for model_name in names:
-    with open(model_name,"rb") as f:
-        test_model = pickle.load(f)
-    test_model.initialize()
-    print(type(test_model.module))
+
+    # load pytorch model
+    model = SimpleFFNN(509, 254)
+    model.load_state_dict(torch.load("./"+model_name))
+    model.eval()
     
     # .explainer()
     print("Starting SHAP values")
     if model_name[0] == "l":
-        explainer = shap.GradientExplainer(test_model.module, np.asarray(lap_data))
-        shap_values = explainer.shap_values(np.asarray(lap_data))
+        explainer = shap.GradientExplainer(model, lap_data)
+        shap_values = explainer.shap_values(lap_data)
     else:
-        explainer = shap.GradientExplainer(test_model.module, open_data)
-        shap_values = explainer.shap_values(np.asarray(open_data))
+        explainer = shap.GradientExplainer(model, open_data)
+        shap_values = explainer.shap_values(open_data)
 
 
     # # beswarm plot
