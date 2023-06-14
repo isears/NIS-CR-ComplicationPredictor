@@ -1,4 +1,5 @@
 import re
+import pandas as pd
 
 COLONIC_NEOPLASIA_CODES = [
     'D12.0', 'D12.2', 'D12.3', 'D12.4', 'D12.5', 'D12.6', 'K63.5', '211.3', '153.0', '153.1', '153.2', '153.3',
@@ -7,7 +8,50 @@ COLONIC_NEOPLASIA_CODES = [
 ]
 
 
+def tell_me_more(has_na):
+    """
+    Compute demographics statistics about the admissions that have missing values for a specific column
+
+    :param has_na: subset of data to be dropped
+
+    """
+
+    nis_race = {
+        0: 'Unknown',
+        1: 'White',
+        2: 'Black',
+        3: 'Hispanic',
+        4: 'Asian or Pacific Islander',
+        5: 'Native American',
+        6: 'Other'
+    }
+
+    print('Race:')
+    has_na['RACE'] = has_na['RACE'].fillna(0.0)
+    has_na['RACE'] = has_na['RACE'].apply(lambda r: nis_race[r])
+    print(has_na['RACE'].value_counts(normalize=True))
+
+    print("Age: median (mean +/- std)")
+    print(f"{has_na['AGE'].median()} ({has_na['AGE'].mean()} +/- {has_na['AGE'].std()})")
+
+    print("ZIP INC QRTL: median (mean +/- std)")
+    print(f"{has_na['ZIPINC_QRTL'].median()} ({has_na['ZIPINC_QRTL'].mean()} +/- {has_na['ZIPINC_QRTL'].std()})")
+
+    print("APRDRG Severity: median (mean +/- std)")
+    print(
+        f"{has_na['APRDRG_Severity'].median()} ({has_na['APRDRG_Severity'].mean()} +/- {has_na['APRDRG_Severity'].std()})")
+
+    print('DIED:')
+    has_na['DIED'] = has_na['DIED'].fillna(0.0)
+    print(has_na['DIED'].value_counts(normalize=True))
+
+    print('LOS:')
+    print(f"{has_na['LOS'].median()} ({has_na['LOS'].mean()} +/- {has_na['LOS'].std()})")
+
+
 def do_filter(df_in):
+    pd.options.mode.chained_assignment = None  # default='warn'
+
     over_18 = df_in[df_in['AGE'] > 18]
     print(f'(Age filter) Removed {df_in.shape[0] - over_18.shape[0]} rows, {over_18.shape[0]} remaining')
 
@@ -35,13 +79,6 @@ def do_filter(df_in):
 
     valid_features = zip_merged.dropna(subset=['AGE', 'APRDRG_Risk_Mortality', 'APRDRG_Severity', 'ZIPINC_QRTL'])
 
-    # The '.' indicates na in some NIS columns
-    valid_features = valid_features[
-        (valid_features['APRDRG_Risk_Mortality'] != '.') |
-        (valid_features['APRDRG_Severity'] != '.') |
-        (valid_features['ZIPINC_QRTL'] != '.')
-        ]
-
     print(f'(Feature validity filter) Removed {zip_merged.shape[0] - valid_features.shape[0]} rows, '
           f'{valid_features.shape[0]} remaining')
 
@@ -49,5 +86,10 @@ def do_filter(df_in):
         (valid_features['APRDRG_Risk_Mortality'] != 0) & (valid_features['APRDRG_Severity'] != 0)]
     print(f'(APRDRG validity filter) Removed {valid_features.shape[0] - valid_aprdrg.shape[0]} rows, '
           f'{valid_aprdrg.shape[0]} remaining')
+
+    dropped_df = colonic_neoplasia[~colonic_neoplasia.index.isin(valid_aprdrg.index)]
+    print(f"Investigating dropped rows ({len(dropped_df)})")
+    print("-" * 15)
+    tell_me_more(dropped_df)
 
     return valid_aprdrg

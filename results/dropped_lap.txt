@@ -1,0 +1,26 @@
+Investigating dropped rows (127), Lap dataset
+---------------
+Race:
+White                        0.677165
+Black                        0.102362
+Unknown                      0.086614
+Hispanic                     0.055118
+Other                        0.047244
+Native American              0.023622
+Asian or Pacific Islander    0.007874
+
+Age: median (mean +/- std)
+64.0 (64.8740157480315 +/- 11.37387156515768)
+
+ZIP INC QRTL: median (mean +/- std)
+2.0 (2.5625 +/- 1.1622419935679933)
+
+APRDRG Severity: median (mean +/- std)
+1.0 (1.5212765957446808 +/- 0.7860165447963948)
+
+DIED:
+0.0    0.984252
+1.0    0.015748
+
+LOS:
+4.0 (5.196850393700787 +/- 4.666733622102567)

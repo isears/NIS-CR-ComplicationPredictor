@@ -1,0 +1,26 @@
+Investigating dropped rows (1373), Open dataset
+---------------
+Race:
+White                        0.579024
+Unknown                      0.308084
+Black                        0.053897
+Hispanic                     0.032775
+Asian or Pacific Islander    0.013110
+Other                        0.009468
+Native American              0.003642
+
+Age: median (mean +/- std)
+71.0 (69.18135469774217 +/- 12.518378404246743)
+
+ZIP INC QRTL: median (mean +/- std)
+2.5 (2.473684210526316 +/- 1.0577194227537898)
+
+APRDRG Severity: median (mean +/- std)
+2.0 (1.8376288659793814 +/- 0.81067249965321)
+
+DIED:
+0.0    0.990532
+1.0    0.009468
+
+LOS: median (mean +/- std)
+7.0 (7.486151603498542 +/- 4.501133407833828)
