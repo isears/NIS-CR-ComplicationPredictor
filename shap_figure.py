@@ -27,14 +27,16 @@ for model_name in names:
     model = SimpleFFNN(509, 254)
     model.load_state_dict(torch.load("./"+model_name))
     model.eval()
-    
+
     # .explainer()
     print("Starting SHAP values")
     if model_name[0] == "l":
-        explainer = shap.GradientExplainer(model, lap_data)
+        sampled_lap_data = shap.sample(lap_data, 100)
+        explainer = shap.GradientExplainer(model, sampled_lap_data)
         shap_values = explainer.shap_values(lap_data)
     else:
-        explainer = shap.GradientExplainer(model, open_data)
+        sampled_open_data = shap.sample(open_data, 100)
+        explainer = shap.GradientExplainer(model, sampled_open_data)
         shap_values = explainer.shap_values(open_data)
 
 
