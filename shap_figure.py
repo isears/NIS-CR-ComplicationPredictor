@@ -32,11 +32,11 @@ for model_name in names:
     print("Starting SHAP values")
     if model_name[0] == "l":
         sampled_lap_data = shap.sample(lap_data, 10)
-        explainer = shap.GradientExplainer(model, sampled_lap_data)
+        explainer = shap.DeepExplainer(model, sampled_lap_data)
         shap_values = explainer.shap_values(sampled_lap_data)
     else:
         sampled_open_data = shap.sample(open_data, 10)
-        explainer = shap.GradientExplainer(model, sampled_open_data)
+        explainer = shap.DeepExplainer(model, sampled_open_data)
         shap_values = explainer.shap_values(sampled_open_data)
 
 
