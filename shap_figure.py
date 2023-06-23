@@ -42,6 +42,6 @@ for model_name in names:
 
     # # beswarm plot
     print("Starting Beeswarm")
-    shap.plots.beeswarm(shap_values, color=plt.get_cmap("cool"))
+    shap.plots.beeswarm(explainer, color=plt.get_cmap("cool"))
     image_name = model_name[:-4] + "image.png"
     plt.savefig(image_name)
