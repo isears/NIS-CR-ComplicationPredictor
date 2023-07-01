@@ -62,7 +62,7 @@ def make_plots(dataset, model_name):
     plt.savefig(image_name)
     plt.clf()
 
-    for non_binary_var in ['Age', 'ZIP income quartile']:
+    for non_binary_var in ['Age', 'ZIP income quartile', 'APRDRG_Severity']:
         # Can I look at age individually?
         feat_idx = pretty_features.index(non_binary_var)
         shap.summary_plot(np.expand_dims(shap_values[:, 0], axis=1), feature_names=[pretty_features[feat_idx]],
